@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>C – 浅析链表中的点点滴滴 《C语言篇》 | XuZhengke</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="最近大家都在学习数据结构，其中链表部分是目前出问题最多的地方，这里就我最近收到的问题进行简单的整理，有出错的地方欢迎指出 本文讨论一下几个问题:  结构体怎么声明和定义变量? struct Node p 和 struct Node *pp 什么区别？ typedef 到底定义了什么？ 我该如何将一个结构体变量传入自定义的方法并且对其进行操作？   1. 结构体怎么声明和定义变量？结构体类似下面这">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C – 浅析链表中的点点滴滴 《C语言篇》">
+<meta property="og:url" content="http://xuzhengke.cn/2017/10/16/%E6%B5%85%E6%9E%90%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E7%82%B9%E7%82%B9%E6%BB%B4%E6%BB%B4/index.html">
+<meta property="og:site_name" content="XuZhengke">
+<meta property="og:description" content="最近大家都在学习数据结构，其中链表部分是目前出问题最多的地方，这里就我最近收到的问题进行简单的整理，有出错的地方欢迎指出 本文讨论一下几个问题:  结构体怎么声明和定义变量? struct Node p 和 struct Node *pp 什么区别？ typedef 到底定义了什么？ 我该如何将一个结构体变量传入自定义的方法并且对其进行操作？   1. 结构体怎么声明和定义变量？结构体类似下面这">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://www.xuzhengke.cn/wp-content/uploads/2017/10/755349b633153756eaa245c6c4d01fb1.png">
+<meta property="article:published_time" content="2017-10-15T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-06-22T10:52:29.140Z">
+<meta property="article:author" content="xuzhengke">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://www.xuzhengke.cn/wp-content/uploads/2017/10/755349b633153756eaa245c6c4d01fb1.png">
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/9.2.0/styles/github.min.css">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+      });
+    });
+  </script>
+  
+<link rel="stylesheet" href="/css/index.css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body style="
+
+
+  background-color: #eff0f6
+
+">
+  <div id="container">
+    <nav id="nav">
+  <header class="header">
+    <a href="/" class="title">XuZhengke</a>
+  </header>
+  <div class="ctnWrap">
+    <div class="icons">
+      
+        
+          
+            <a href="https://github.com/ixzk" target="_blank" class="nav-icn iconfont icon-github"></a>
+          
+        
+      
+    </div>
+    <div class="menu">
+      
+        
+            <a href="/" class="nav-menu ">首页</a>
+          
+        
+            <a href="/archives" class="nav-menu ">归档</a>
+          
+        
+            <a href="/categories" class="nav-menu ">分类</a>
+          
+        
+            <a href="/about" class="nav-menu ">关于我</a>
+          
+        
+      
+    </div>
+  </div>
+</nav>
+    <div id="main"><section class="article">
+  <h2 class="title">C – 浅析链表中的点点滴滴 《C语言篇》</h2>
+  <p class="sub">Oct 16, 2017</p>
+  <article class="content">
+    <blockquote>
+<p>最近大家都在学习数据结构，其中链表部分是目前出问题最多的地方，这里就我最近收到的问题进行简单的整理，有出错的地方欢迎指出</p>
+<p>本文讨论一下几个问题:</p>
+<ol>
+<li>结构体怎么声明和定义变量?</li>
+<li>struct Node p 和 struct Node *pp 什么区别？</li>
+<li>typedef 到底定义了什么？</li>
+<li>我该如何将一个结构体变量传入自定义的方法并且对其进行操作？</li>
+</ol>
+</blockquote>
+<h2 id="1-结构体怎么声明和定义变量？"><a href="#1-结构体怎么声明和定义变量？" class="headerlink" title="1. 结构体怎么声明和定义变量？"></a>1. 结构体怎么声明和定义变量？</h2><p>结构体类似下面这种样式</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> 结构体名&#123;</span></span><br><span class="line">	<span class="keyword">int</span> a;</span><br><span class="line">	<span class="keyword">double</span> b;</span><br><span class="line">&#125;; <span class="comment">//注意分号</span></span><br></pre></td></tr></table></figure>
+
+<p>定义结构体变量</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> 结构体名 <span class="title">a</span>;</span></span><br></pre></td></tr></table></figure>
+
+<p>注意在C语言中使用 ‘ struct 结构体名 ‘ 两个关键词来定义一个结构体变量，当然在C++中可以直接用’ 结构体名’ 来定义变量</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在C++中与上面等效</span></span><br><span class="line">结构体名 a;</span><br></pre></td></tr></table></figure>
+
+<p>注意在声明结构体的时候不能将其变量赋值，即上面的结构体中不能将int a书写成int a = 0;</p>
+<hr>
+<h2 id="2-struct-Node-p-和-struct-Node-pp-什么区别？"><a href="#2-struct-Node-p-和-struct-Node-pp-什么区别？" class="headerlink" title="2. struct Node p 和 struct Node *pp 什么区别？"></a>2. struct Node p 和 struct Node *pp 什么区别？</h2><p>这两个浅层次理解就是p就是一个结构体，可以用 p.a 的方式来设置a的值，而*pp 是一个结构体指针，它本身不能和前面的p一样来设置a的值，需要先指向一块结构体大小的内存，然后就可以通过pp-&gt;a的方式来设置a的值。</p>
+<p>往深处讲，前者和后者的在内存中的分配不同，就像C++中用new和不用new实例化对象一样。</p>
+<p><strong>这里注意一点，很多同学都是从Java转向C数据结构的，在Java可以用 . (俗称点语法)调用对象的成员变量。但是在p和pp中, p可以用 . 来调用成员，而pp则要用 -&gt; 的方式来调用成员，pp-&gt;a表示引用 pp所指向的结构体中的成员a。</strong></p>
+<p>下面用代码区分一下这两种形式。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> </span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> 	<span class="comment">//在调用malloc()方法时用到此库</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> a;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//第一种方式 定义一个正常的结构体变量</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">Node</span> <span class="title">p1</span>;</span></span><br><span class="line">	p1.a = <span class="number">1</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, p1.a);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//第二种方式 定义一个正常的结构体变量，并直接赋值</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">Node</span> <span class="title">p2</span> = &#123;</span><span class="number">2</span>&#125;;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, p2.a);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//第三种方式 定义一个结构体指针</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">Node</span> *<span class="title">pp</span> = (<span class="title">struct</span> <span class="title">Node</span> *)<span class="title">malloc</span>(<span class="title">sizeof</span>(<span class="title">struct</span> <span class="title">Node</span>));</span></span><br><span class="line">	pp-&gt;a = <span class="number">3</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, pp-&gt;a);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以明显看出，第一种第二种方式是正常的结构体变量，可以直接或间接的赋值，第三种使用了结构体指针，必须让指针pp指向一块新的结构体类型内存，然后才能通过pp指针对结构体操作。 区别在于，正常的结构体变量只能在程序结束时释放掉内存，而接哦固体指针可以使用free()方法在程序运行时释放对应的内存。</p>
+<hr>
+<h2 id="3-typedef-到底定义了什么？"><a href="#3-typedef-到底定义了什么？" class="headerlink" title="3. typedef 到底定义了什么？"></a>3. typedef 到底定义了什么？</h2><p>typedef 在百科上的解释是 为复杂的声明 定义简单的别名，就理解为起绰号吧。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">NodeName</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> a;</span><br><span class="line">&#125;Node;</span><br><span class="line"></span><br><span class="line"><span class="comment">//如此之后，下面两个定义是等效的</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">NodeName</span> <span class="title">p1</span>;</span></span><br><span class="line">Node p2;</span><br></pre></td></tr></table></figure>
+
+<p>这里一定要正确理解原来的定义方式是什么，修改后的定义方式。 这里 struct NodeName 与 Node 是等效的。<br>然而当出现下面的书写方式时，有些同学可能就搞混了到底是谁是谁的别名。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">NodeName</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> a;</span><br><span class="line">&#125;NodeA,NodeB;</span><br><span class="line"></span><br><span class="line"><span class="comment">//如此之后，下面三个定义是等效的</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">NodeName</span> <span class="title">p1</span>;</span></span><br><span class="line">NodeA p2;</span><br><span class="line">NodeB p3;</span><br></pre></td></tr></table></figure>
+
+<p>这三种定义方式是等效的，就好比一个人有两个绰号一样，</p>
+<p>或许当你想起这位小哥的时候你就理解typedef的作用了。</p>
+<p><img src="http://www.xuzhengke.cn/wp-content/uploads/2017/10/755349b633153756eaa245c6c4d01fb1.png" alt="img"></p>
+<p>那我们再看一种复杂的typedef</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">NodeName</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> a;</span><br><span class="line">&#125;Node, *pNode;</span><br><span class="line"></span><br><span class="line"><span class="comment">//如此之后，下面四个定义是等效的</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">NodeName</span> <span class="title">p1</span>;</span></span><br><span class="line">Node p2;</span><br><span class="line">Node *p3 = (Node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">pNode p4 = (pNode)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br></pre></td></tr></table></figure>
+
+<p>注意我只是说方法上是等效的，实际上p1,p2 和 p3,p4 是有区别的，具体去看问题 2。</p>
+<p>在这里我们给struct NodeName 起了两个不同类型的别名，一个带<em>一个不带</em>，Node则和前面的例子一样属于正常起绰号，凡是带<em>号的那就和指针有关了，用pNode定义变量时其实就相当于Node *，只不过人家pNode在一开始就写过</em>了，所以效果是等同的(看上述代码)。<br>那么还有一个问题，为什么p4在使用malloc的时候我最后的sizeof()里面是Node而不是pNode,因为给sizeof()方法传入指针时，只会求的指针本身的大小，而不是Node的大小，这就是为什么有时候自定义方法对数组操作时需要把数组的长度一并传给自定义方法。</p>
+<p>因为在链表中我们会大量的操作内存，比如分配新的内存，回收旧的内存等操作，所以在链表中会大量的使用指针，如果每次声明结构体指针都要用 Node <em>p 这样的方式也许会显得比较麻烦，所以会有一部分同学把</em>直接写在typedef那里，那么可以直接用pNode p 来定义结构体指针了，只要记得凡是pNode定义的变量都是指针就好。(tip: p代表point，所以一般程序中都会用p代表指针变量或者与指针有关的关键词)</p>
+<hr>
+<h2 id="4-我该如何将一个结构体变量传入自定义的方法并且对其进行操作？"><a href="#4-我该如何将一个结构体变量传入自定义的方法并且对其进行操作？" class="headerlink" title="4. 我该如何将一个结构体变量传入自定义的方法并且对其进行操作？"></a>4. 我该如何将一个结构体变量传入自定义的方法并且对其进行操作？</h2><p>写这个问题原因是有的同学会遇到类似这样的问题 (VC 6.0):</p>
+<p>假设我们现在要写一个方法，传入一个结构体，然后在方法中改变结构体的值。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">changeA1</span><span class="params">(Node p)</span></span>&#123;</span><br><span class="line">	p.a = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">changeA2</span><span class="params">(Node *p)</span></span>&#123;</span><br><span class="line">	p-&gt;a = <span class="number">2</span>;</span><br><span class="line">&#125; </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">changeA3</span><span class="params">(Node &amp;p)</span></span>&#123;</span><br><span class="line">	p.a = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	Node p;</span><br><span class="line">	p.a = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">	changeA1(p);</span><br><span class="line"></span><br><span class="line">	changeA2(&amp;p);</span><br><span class="line"></span><br><span class="line">	changeA3(p);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这是我在最近收到的代码中遇到的几种写法，主要是形参的不同，然后在主方法调用三个自定义的方法。结果有的地方就会出现上图所示的错误。<br>这里比较混乱，我们先想一下C语言传参的方式，值传递和址传递两种，我暂时没见过类似changeA3(Node &amp;p)那样的方式，&amp;是取地址符，在这里没有取地址的必要，所以这种定义方式一般不要去考虑，从值传递和址传递两种去考虑，即方法1 和 2， 方法1大家都知道，最终不会改变a的值，所以最终留下来的只有方法2 定义的时候形参为指针形式，使用的时候将结构体的地址传入。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">changeA2</span><span class="params">(Node *p)</span></span>&#123;</span><br><span class="line">	p-&gt;a = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	Node p;</span><br><span class="line">	p.a = <span class="number">1</span>;</span><br><span class="line">	<span class="comment">//这里就用到了上述的取地址符&amp;,意思是将p的地址取出来传给方法</span></span><br><span class="line">	changeA2(&amp;p);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//第二种形式</span></span><br><span class="line">	Node *p2 = (Node *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(Node));</span><br><span class="line">	p2-&gt;a = <span class="number">1</span>;</span><br><span class="line">	changeA2(p2);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>目前遇到的有意义的问题暂时有这么多，后续继续填坑，理解能力有限，欢迎指出错误。</p>
+
+  </article>
+  <footer class="f-cf">
+    
+    
+      <a href="/2016/12/24/C-%E5%AD%A6%E7%94%9F%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/" class="link f-fr">C - 链表和文件操作实现「学生信息管理系统」⟶</a>
+    
+  </footer>
+</section></div>
+    <footer id="footer" class="f-cf">
+  xzkjob@gmail.com
+  
+    
+      
+        · <a href="https://github.com/ixzk" target="_blank" class="nav-icn">GitHub</a>
+      
+    
+  
+  <span class="copyright">All rights reserved @ZhengkeXu</span>
+</footer>
+  </div>
+</body>
+</html>
