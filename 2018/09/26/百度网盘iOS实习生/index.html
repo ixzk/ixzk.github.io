@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>百度网盘iOS实习生 - 三面总结 | XuZhengke</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="公司: 北京百度网盘 时间: 2018-09-26 应聘岗位: iOS实习生 结果: 一面二面过，三面凉     一面：  * 简述iOS的Runtime          * [p setName:a] 转换成runtime的写法        ojbc_msgSend()          * 假如某一个类中没有func1方法，如果外部调用[p func1]时调用已写好的fun2方法来防止崩溃">
+<meta property="og:type" content="article">
+<meta property="og:title" content="百度网盘iOS实习生 - 三面总结">
+<meta property="og:url" content="http://xuzhengke.cn/2018/09/26/%E7%99%BE%E5%BA%A6%E7%BD%91%E7%9B%98iOS%E5%AE%9E%E4%B9%A0%E7%94%9F/index.html">
+<meta property="og:site_name" content="XuZhengke">
+<meta property="og:description" content="公司: 北京百度网盘 时间: 2018-09-26 应聘岗位: iOS实习生 结果: 一面二面过，三面凉     一面：  * 简述iOS的Runtime          * [p setName:a] 转换成runtime的写法        ojbc_msgSend()          * 假如某一个类中没有func1方法，如果外部调用[p func1]时调用已写好的fun2方法来防止崩溃">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=2847717430,1606509281&fm=58&s=0272C8328CA07D0147EC71C6000030B0&bpow=121&bpoh=75">
+<meta property="article:published_time" content="2018-09-25T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-06-22T13:09:10.983Z">
+<meta property="article:author" content="xuzhengke">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=2847717430,1606509281&fm=58&s=0272C8328CA07D0147EC71C6000030B0&bpow=121&bpoh=75">
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/10.1.0/styles/github.min.css">
+  <script src="//cdn.bootcss.com/highlight.js/10.1.1/highlight.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+      });
+    });
+  </script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+<link rel="stylesheet" href="/css/index.css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body style="
+
+
+  background-color: #eff0f6
+
+">
+  <div id="container">
+    <nav id="nav">
+  <header class="header">
+    <a href="/" class="title">XuZhengke</a>
+  </header>
+  <div class="ctnWrap">
+    <div class="icons">
+      
+        
+          
+            <a href="https://github.com/ixzk" target="_blank" class="nav-icn iconfont icon-github"></a>
+          
+        
+      
+    </div>
+    <div class="menu">
+      
+        
+            <a href="/" class="nav-menu ">首页</a>
+          
+        
+            <a href="/archives" class="nav-menu ">归档</a>
+          
+        
+            <a href="/categories" class="nav-menu ">分类</a>
+          
+        
+            <a href="/about" class="nav-menu ">关于我</a>
+          
+        
+      
+    </div>
+  </div>
+</nav>
+    <div id="main"><section class="article">
+  <h2 class="title">百度网盘iOS实习生 - 三面总结</h2>
+  <p class="sub">Sep 26, 2018</p>
+  <article class="content">
+    <p><img src="https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=2847717430,1606509281&fm=58&s=0272C8328CA07D0147EC71C6000030B0&bpow=121&bpoh=75" alt="百度网盘"></p>
+<blockquote>
+<p>公司: 北京百度网盘<br>时间: 2018-09-26<br>应聘岗位: iOS实习生<br>结果: 一面二面过，三面凉</p>
+</blockquote>
+<hr>
+<h2 id="一面："><a href="#一面：" class="headerlink" title="一面："></a>一面：</h2><ul>
+<li><p>简述iOS的Runtime</p>
+</li>
+<li><p>[p setName:a] 转换成runtime的写法</p>
+<blockquote>
+<p>ojbc_msgSend()</p>
+</blockquote>
+</li>
+<li><p>假如某一个类中没有func1方法，如果外部调用[p func1]时调用已写好的fun2方法来防止崩溃</p>
+<blockquote>
+<p>重写resolveInstanceMethod方法，动态添加func2方法</p>
+<p>class_addMethod([self class], sel, (IMP)func2, “v@:”);</p>
+</blockquote>
+</li>
+<li><p>runtime消息转发原理</p>
+</li>
+<li><p>runtime中是如何知道一个对象所属的类</p>
+<blockquote>
+<p>isa指针</p>
+</blockquote>
+</li>
+<li><p>接上，isa指针是什么类型，里面有什么</p>
+<blockquote>
+</blockquote>
+</li>
+<li><p>简述ARC中 atomic,nonatomic,assign,weak,strong的区别</p>
+</li>
+<li><p>atomic一定是现成安全的嘛?</p>
+<blockquote>
+<p>面试官提示: 不是，例如NSArray *arr如果用atomic的话就存在不安全问题，因为atomic修饰的是arr这个指针，也就是自身所占用的8字节，但是arr指向的实际数据占用的n字节没有任何限制。</p>
+</blockquote>
+</li>
+<li><p>ARC中weak和assign有什么区别</p>
+<blockquote>
+<p>weak只能修饰对象，assign能修饰基本类型和对象。当都指向对象时，如果对象被释放，weak会自动赋值nil，assign不会，这样就形成了野指针。(对nil发送消息是不会crash的) 总结在ARC模式下指针对象一定要用weak来修饰，基本类型和结构体用assign</p>
+</blockquote>
+</li>
+<li><p>strong和weak的不同</p>
+</li>
+<li><p>strong和copy的不同</p>
+<blockquote>
+<p>可以考虑NSMutableString</p>
+</blockquote>
+</li>
+<li><p><strong><em>weak(弱引用)的实现原理\</em></strong></p>
+<blockquote>
+<p>面试之前看到一篇推文就带过了，没想到被问到了。<br><a href="https://mp.weixin.qq.com/s?src=11&timestamp=1537973950&ver=1146&signature=R8kHLW*ooUy*0stHvJQnNQR3urc1k4TdLXvFMy6e4q6ys11oveg650Va3Ao4iPLk9OBxe-H8xCiYdSCusKi4Nw3MKOjtJHDva4ipXvfhF6dcwKLrrAFRe7hxhfeprUaX&new=1" target="_blank" rel="noopener">从历年 weak 看 iOS 面试,看看你卡在哪一年？</a></p>
+</blockquote>
+</li>
+<li><p>简述 点击一个按钮时，整个事件的响应链</p>
+</li>
+<li><p>用MySQL设计一个学生选课管理系统</p>
+</li>
+<li><p>查出选三门课以上的同学</p>
+</li>
+<li><p>查出没选课的同学</p>
+<blockquote>
+<p>设计三个表 courses students c_s(课程学生关系表)</p>
+</blockquote>
+</li>
+<li><p>有一个int二维数组，每行，每列都是数据逐渐递增，如何快速的找到一个数</p>
+<blockquote>
+<p>第一遍我答的是按照每行最后一个数与所求数的大小，去确定在哪一行。<br>第二遍我想的是每次都以数组的中心点为基础去确定在田字格的哪个方向，然后按照这个思路去递归查找<br>(应该是剑指Offer的)</p>
+</blockquote>
+</li>
+<li><p>接上，一维递增数列，手写二分法去查找一个数是否在该数列中。</p>
+</li>
+<li><p><strong><em>KVO的实现原理\</em></strong></p>
+<blockquote>
+<p>这个题目听的Hank老师的公开课</p>
+</blockquote>
+</li>
+<li><p>简单介绍GET和POST的区别，以及介绍一个HTTP请求的组成部分</p>
+<blockquote>
+<p>请求的Header和Body</p>
+</blockquote>
+</li>
+<li><p>简述KVO，block和通知监听value变化的不同。</p>
+</li>
+<li><p>GCD的几种常用函数</p>
+</li>
+<li><p>了解GCD栅栏函数吗，怎么用</p>
+</li>
+<li><p>解释同步和主队列死锁问题</p>
+</li>
+<li><p>简述 static 和 const, const NSString *str 和 NSString * const str 有什么区别</p>
+<blockquote>
+<p><strong>总结</strong></p>
+</blockquote>
+</li>
+</ul>
+<p>一面整体不算难，可能有一些琐碎或者不起眼的基础知识被我一眼带过了，weak和assign的区别，时间响应链，weak的原理…所以基础知识很重要。runtime的基本应用和原理要好好理解，毕竟OC是运行时的，不问Runtime就没啥意思了。</p>
+<hr>
+<h2 id="二面"><a href="#二面" class="headerlink" title="二面:"></a>二面:</h2><ul>
+<li>简述MVC,V和M能通信吗，MVVM又是什么</li>
+<li>简述计算机网络的五层协议</li>
+<li>用过dispatch_once吗，主要用来做什么</li>
+</ul>
+<blockquote>
+<p>在单例模式用到过</p>
+</blockquote>
+<ul>
+<li>为什么要用dispatch_once，他是线程安全的吗？为什么</li>
+<li>常用的线程锁</li>
+<li>常用的设计模式，简述观察者模式和工厂模式</li>
+<li>简述你开发中常用的库</li>
+</ul>
+<blockquote>
+<p>我列举的SDWebImage,MJRefresh,AFNetworking</p>
+</blockquote>
+<ul>
+<li>上述库你认为哪一个设计的更好，为什么</li>
+<li>ViewController的生命周期</li>
+<li>weak和assign的不同(一二面都问到了)</li>
+<li>深拷贝和浅拷贝的区别</li>
+<li>堆和栈的区别</li>
+<li>block有哪几种(3种)，区别是什么</li>
+<li>autolayout的实现原理，计算公式</li>
+<li>手写快排</li>
+<li>手写二叉树的翻转</li>
+<li>简述红黑树和B+树</li>
+</ul>
+<blockquote>
+<p><strong><em>总结\</em></strong></p>
+</blockquote>
+<p>由于仅大二水平，计算机网络还没有学，所以题目没打出来，不过这也不是理由。多线程仅局限在使用层面，GCD的原理没有接触，线程安全没有接触。常用框架没读过代码，调包侠一个。生命周期为基础知识，忘了。<br>三种block之前没接触过，所以区别还是不太清楚(其实也不算没接触到，比如要修改block外的变量时要用__block，这里就涉及到该点)。数据结构GG。感觉能过二面完全就是侥幸。</p>
+<h2 id="三面"><a href="#三面" class="headerlink" title="三面:"></a>三面:</h2><blockquote>
+<p>三面由经理面试，主要是介绍自己。</p>
+</blockquote>
+<ul>
+<li>介绍自己，介绍自己学过的课程(题主为学生)，着重介绍自己做过的项目。</li>
+<li>分析每个项目中自己做的部分<ul>
+<li>校园应用: 主要是后端，没过多问</li>
+<li>小学堂: 问到哪里用到了KVO，项目中学到了什么。</li>
+<li>Seek: 问我做了哪部分(游戏对战，提词之类)，由此引出Socket。问学到的东西，(我也不知道为什么每次问这一点我都答不上来，因为我觉得我是在项目中巩固和熟练知识)</li>
+</ul>
+</li>
+<li>引出Socket: Socket原理，心跳包的监测，SRWebSocket的使用</li>
+<li>同二面：计算机网络的五层协议</li>
+<li>介绍自己觉得最拿手的语言或者技能</li>
+</ul>
+<blockquote>
+<p>无奈，说出PHP</p>
+</blockquote>
+<ul>
+<li>由此引出，为何从后端转到前端，对前端是怎样理解的</li>
+</ul>
+<blockquote>
+<p>经理一直强调这个题没有坑，但是确实还是耗时很长的一个题目，首先我先接触的PHP，做过一些小项目和api之类的工作。后来接触iOS，觉得更喜欢去和用户打交道，通过前端的交互，把后端更强大的功能展示给用户，所以我觉得一个项目能给用户带来印象的，首先是它的前端界面和一些交互逻辑，还有一些功能的实现，后端功能再强大，前端做的不好用户也不会觉得好用，然后一点就是因为喜欢，没有太多的原因。<br>但是还是太肤浅了</p>
+</blockquote>
+<ul>
+<li><p>了解C，C++，JAVA，Python吗</p>
+</li>
+<li><p>了解Golang吗，假如有个项目需要我来写，给我10天时间，如何学习Golang并按时开始写生产代码。</p>
+<blockquote>
+<p>我的回答是先找本书看代码的风格和语法，然后看一些实战的视频，跟着快速撸一遍熟悉逻辑。(面试官提了一句 花时间看基础和语法，我就说看语法时间少，实战多用点时间)</p>
+</blockquote>
+</li>
+<li><p>线程和协程的区别</p>
+</li>
+<li><p>被问数据结构的掌握情况，有没有自己实践过某种数据结构</p>
+</li>
+<li><p>最近读过的印象最深的一本书（计算机类），印象最深的段落</p>
+</li>
+<li><p>常用的设计模式，MVC属于什么设计模式</p>
+</li>
+<li><p>印象最深的一个BUG</p>
+</li>
+</ul>
+<blockquote>
+<p>这种印象最深的我觉得以后我可以整理一下，因为这种问题我会紧张的想不到</p>
+</blockquote>
+<ul>
+<li><strong><em>被严重怀疑大三哪来的时间实习\</em></strong></li>
+</ul>
+<blockquote>
+<p><strong><em>总结\</em></strong></p>
+</blockquote>
+<p>面试官对我的印象主要是基础不扎实，太偏向于应用层，或者太偏向于界面，应该将自己的知识面往下拓展拓展，不要知其然而不知其所以然。</p>
+<hr>
+<p>这次面试给我很大的感触。首先就是基础知识的问题，很多东西都被我草草带过了，结果是一个很重要的知识点。大部分地方只知道怎么用而不知道底层原理。现在终于知道学校上的课有什么用了，数据结构、算法、计算机组成原理等等，这些东西根本应付不得。所以我想用年前的这段时间，将我的基础知识补上。</p>
+<p><strong><em>最后的最后\</em></strong>，我问了三面的经理一个的问题：</p>
+<p>我把一个段子讲给他，</p>
+<blockquote>
+<p>应聘者: 我需要一份工作<br>老板: 你要先有经验<br>应聘者: 但我需要工作来获得经验<br>老板: 那就工作啊！<br>应聘者: 这就是我今天为什么来到你这里<br>老板: 你的经验呢？<br>应聘者: 那我怎么在没工作的状态下获得经验<br>老板: 工作！</p>
+</blockquote>
+<p>我问他，作为一个高层，是如何看待经验或者项目经理这个问题的。</p>
+<p>他告诉我说，对于学生，经验这部分肯定没那么多，如果我们要培养一位实习生，是要付出代价和承担风险的，我们不能去冒任何的风险。我们是否接受一个实习生，主要看的是他是否值得我们去付出这个代价，如果可以的话，对双方都有利，何乐而不为。</p>
+<h3 id="So，加把劲吧。"><a href="#So，加把劲吧。" class="headerlink" title="So，加把劲吧。"></a>So，加把劲吧。</h3>
+  </article>
+  <footer class="f-cf">
+    
+      <a href="/2020/06/29/WWDC-20-IT/" class="link f-fl">⟵IT之家对话21岁开发者徐正科：很多好玩的点子等我去实现</a>
+    
+    
+      <a href="/2017/10/16/%E6%B5%85%E6%9E%90%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E7%82%B9%E7%82%B9%E6%BB%B4%E6%BB%B4/" class="link f-fr">C – 浅析链表中的点点滴滴 《C语言篇》⟶</a>
+    
+  </footer>
+</section></div>
+    <footer id="footer" class="f-cf">
+  xzkjob@gmail.com
+  
+    
+      
+        · <a href="https://github.com/ixzk" target="_blank" class="nav-icn">GitHub</a>
+      
+    
+  
+  <span class="copyright">All rights reserved @ZhengkeXu</span>
+</footer>
+<script type="text/javascript">document.write(unescape("%3Cspan id='cnzz_stat_icon_1260869892'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1260869892%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script>
+  </div>
+</body>
+</html>

@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   
-  <title>XuZhengke</title>
+  <title>Category: iOS | XuZhengke</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta property="og:type" content="website">
 <meta property="og:title" content="XuZhengke">
-<meta property="og:url" content="http://xuzhengke.cn/categories/index.html">
+<meta property="og:url" content="http://xuzhengke.cn/categories/iOS/index.html">
 <meta property="og:site_name" content="XuZhengke">
 <meta property="og:locale" content="en_US">
 <meta property="article:author" content="xuzhengke">
@@ -70,43 +70,59 @@
 </nav>
     <div id="main">
   
-  <section class="archive">
-    
-      <section class="archive-category">
-        <h1 class="title">C</h1>
-        <ul class="menu">
-          
-            <li>
-              <a href="/2017/10/16/%E6%B5%85%E6%9E%90%E9%93%BE%E8%A1%A8%E4%B8%AD%E7%9A%84%E7%82%B9%E7%82%B9%E6%BB%B4%E6%BB%B4/">C – 浅析链表中的点点滴滴 《C语言篇》</a>
-              <span class="date">Oct 16, 2017</span>
-            </li>
-          
-            <li>
-              <a href="/2016/12/24/C-%E5%AD%A6%E7%94%9F%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/">C - 链表和文件操作实现「学生信息管理系统」</a>
-              <span class="date">Dec 24, 2016</span>
-            </li>
-          
-        </ul>
-      </section>
-    
-      <section class="archive-category">
-        <h1 class="title">iOS</h1>
-        <ul class="menu">
-          
-            <li>
-              <a href="/2020/06/29/WWDC-20-IT/">IT之家对话21岁开发者徐正科：很多好玩的点子等我去实现</a>
-              <span class="date">Jun 29, 2020</span>
-            </li>
-          
-            <li>
-              <a href="/2018/09/26/%E7%99%BE%E5%BA%A6%E7%BD%91%E7%9B%98iOS%E5%AE%9E%E4%B9%A0%E7%94%9F/">百度网盘iOS实习生 - 三面总结</a>
-              <span class="date">Sep 26, 2018</span>
-            </li>
-          
-        </ul>
-      </section>
-    
-  </section>
+    <div class="project-card project-card-continuous">
+  
+  <div class="ctnWrap">
+    <a href="/2020/06/29/WWDC-20-IT/" class="title">IT之家对话21岁开发者徐正科：很多好玩的点子等我去实现</a>
+    <section class="desc">
+  一、关于我
+​ 大家好，我是iOS开发者徐正科，(即将)毕业于北京信息科技大学。 在高中时期接触到了iPhone和MacBook，其系统流畅性深深的吸引了我。进入大学，决定深入探索iOS，就这样，我成了一名iOS开发者。很幸运，近期曾先后从事于腾讯-QQ音乐和字节跳动-西瓜视频团队。
+
+
+
+二、作品
+​ 本次作品的灵感来自于小时候玩过的玩具—-万花尺，也叫繁花曲线规，我们可以选择不同大小的齿轮，将画笔插入到齿轮上的某个孔，绕外齿轮旋转，即可绘制出规整的图案。齿轮的大小，圆孔的位置，都将决定图案的形状。
+
+
+
+​ 通过研究齿轮的转动规律，发现通过代码实现一个繁花曲线规并不难，只需要实时获取圆孔的
+</section>
+    <p class="sub">Jun 29, 2020</p>
+  </div>
+</div>
+  
+    <div class="project-card project-card-continuous">
+  
+  <div class="ctnWrap">
+    <a href="/2018/09/26/%E7%99%BE%E5%BA%A6%E7%BD%91%E7%9B%98iOS%E5%AE%9E%E4%B9%A0%E7%94%9F/" class="title">百度网盘iOS实习生 - 三面总结</a>
+    <section class="desc">
+  公司: 北京百度网盘
+时间: 2018-09-26
+应聘岗位: iOS实习生
+结果: 一面二面过，三面凉
+
+
+
+
+一面：
+ * 简述iOS的Runtime
+   
+   
+ * [p setName:a] 转换成runtime的写法
+   
+   ojbc_msgSend()
+   
+   
+ * 假如某一个类中没有func1方法，如果外部调用[p func1]时调用已写好的fun2方法来防止崩溃
+   
+   重写resolveInstanceMethod方法，动态添加func2方法
+   
+   class_addMethod([self class], sel, (IMP)func2, 
+</section>
+    <p class="sub">Sep 26, 2018</p>
+  </div>
+</div>
+  
 
 
 </div>
