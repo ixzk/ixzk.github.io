@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS – 使用“AFNetworking”实现一个下载器 (思路) | XuZhengke</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="项目中使用AFN实现一个下载器 (思路，非代码) 在此下载器中，我实现了两个类   * DownloadTaskModel: 下载任务类  * DownloadManager: 下载器核心类  DownloadTaskModel: 下载任务类 该类应该包含和下载任务相关的属性，因为下载器属于一个通用的组件，所以不应该包含实际业务代码中的Model，例如视频Model，图片Model，其他资源的Mo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS – 使用“AFNetworking”实现一个下载器 (思路)">
+<meta property="og:url" content="http://xuzhengke.cn/2019/07/14/2019-07-14-iOS-download/index.html">
+<meta property="og:site_name" content="XuZhengke">
+<meta property="og:description" content="项目中使用AFN实现一个下载器 (思路，非代码) 在此下载器中，我实现了两个类   * DownloadTaskModel: 下载任务类  * DownloadManager: 下载器核心类  DownloadTaskModel: 下载任务类 该类应该包含和下载任务相关的属性，因为下载器属于一个通用的组件，所以不应该包含实际业务代码中的Model，例如视频Model，图片Model，其他资源的Mo">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://qiniu.solikeu.com/blog/20200720203836%20159524871615952487167037XMgZN.jpg">
+<meta property="og:image" content="http://qiniu.solikeu.com/blog/20200720203926%2015952487661595248766698unzdGh.jpg">
+<meta property="article:published_time" content="2019-07-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-07-20T12:39:56.431Z">
+<meta property="article:author" content="xuzhengke">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://qiniu.solikeu.com/blog/20200720203836%20159524871615952487167037XMgZN.jpg">
+  
+  <link rel="stylesheet" href="//cdn.bootcss.com/highlight.js/10.1.0/styles/github.min.css">
+  <script src="//cdn.bootcss.com/highlight.js/10.1.1/highlight.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', (event) => {
+      document.querySelectorAll('pre code').forEach((block) => {
+        hljs.highlightBlock(block);
+      });
+    });
+  </script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  
+<link rel="stylesheet" href="/css/index.css">
+
+<meta name="generator" content="Hexo 4.2.1"></head>
+
+<body style="
+
+
+  background-color: #eff0f6
+
+">
+  <div id="container">
+    <nav id="nav">
+  <header class="header">
+    <a href="/" class="title">XuZhengke</a>
+  </header>
+  <div class="ctnWrap">
+    <div class="icons">
+      
+        
+          
+            <a href="https://github.com/ixzk" target="_blank" class="nav-icn iconfont icon-github"></a>
+          
+        
+      
+    </div>
+    <div class="menu">
+      
+        
+            <a href="/" class="nav-menu ">首页</a>
+          
+        
+            <a href="/archives" class="nav-menu ">归档</a>
+          
+        
+            <a href="/categories" class="nav-menu ">分类</a>
+          
+        
+            <a href="/about" class="nav-menu ">关于我</a>
+          
+        
+      
+    </div>
+  </div>
+</nav>
+    <div id="main"><section class="article">
+  <h2 class="title">iOS – 使用“AFNetworking”实现一个下载器 (思路)</h2>
+  <p class="sub">Jul 14, 2019</p>
+  <article class="content">
+    <p><img src="http://qiniu.solikeu.com/blog/20200720203836%20159524871615952487167037XMgZN.jpg" alt="img"></p>
+<h2 id="项目中使用AFN实现一个下载器-思路，非代码"><a href="#项目中使用AFN实现一个下载器-思路，非代码" class="headerlink" title="项目中使用AFN实现一个下载器 (思路，非代码)"></a>项目中使用AFN实现一个下载器 (思路，非代码)</h2><p>在此下载器中，我实现了两个类</p>
+<ul>
+<li>DownloadTaskModel: 下载任务类</li>
+<li>DownloadManager: 下载器核心类</li>
+</ul>
+<h4 id="DownloadTaskModel-下载任务类"><a href="#DownloadTaskModel-下载任务类" class="headerlink" title="DownloadTaskModel: 下载任务类"></a>DownloadTaskModel: 下载任务类</h4><p>该类应该包含和下载任务相关的属性，因为下载器属于一个通用的组件，所以不应该包含实际业务代码中的Model，例如视频Model，图片Model，其他资源的Model等，在下载器外部使用实际业务中的Model去封装一个DownloadTaskModel, 这样下载器在使用model时就与业务代码解耦了。</p>
+<p>我认为一个最基本的DownloadTaskModel应该包含以下属性。</p>
+<ul>
+<li>primaryKey: 写入数据库时的主键</li>
+<li>downloadState: 下载状态 (下载中，暂停，取消，出错等)</li>
+<li>createdTime: 任务创建时间</li>
+<li>localUrl: 本地存储位置</li>
+<li>downloadUrl: 下载地址</li>
+<li>resumeDataUrl: 临时缓存数据 (比如下载到一半)</li>
+<li>errorMessage: 错误信息</li>
+<li>downloadSize: 下载的大小</li>
+<li>totalSize: 总大小 (一般由外部model赋值，可以比对是否下载完成)</li>
+<li>session: 可以指向NSURLSessionDownloadTask对象，以便于对下载任务进行操作。</li>
+</ul>
+<p><img src="http://qiniu.solikeu.com/blog/20200720203926%2015952487661595248766698unzdGh.jpg" alt="img">￼</p>
+<h4 id="DownloadManager-下载器核心类"><a href="#DownloadManager-下载器核心类" class="headerlink" title="DownloadManager 下载器核心类"></a>DownloadManager 下载器核心类</h4><p>下载器核心业务我认为需要包括如下核心功能</p>
+<ul>
+<li>download： 下载</li>
+<li>pause： 暂停</li>
+<li>resume： 恢复已经暂停的任务</li>
+<li>restart： 重新下载</li>
+<li>cancel： 取消下载</li>
+</ul>
+<p>另外还可以将几个常用的操作封装起来对外开放</p>
+<ul>
+<li>checkDiskSize: 通过传入的taskModel检查磁盘是否够用</li>
+<li>delete： 删除已经下载的任务</li>
+<li>totalCount： 下载总数</li>
+<li>filePathForKey： 通过传入key来获取文件下载地址</li>
+<li>taskExist： 判断任务是否已经存在</li>
+</ul>
+<h2 id="1-下载器初始化"><a href="#1-下载器初始化" class="headerlink" title="1. 下载器初始化"></a>1. 下载器初始化</h2><p>下载器应该是一个单例供全局调用，在初始化的时候可以按需读取数据库中存储的下载任务DownloadTaskModel.</p>
+<p>因为这个初始化过程一般是在刚打开APP时操作，所以此时可以对现存的下载任务进行检测。</p>
+<p>比如某个任务已经存在缓存文件，也就是下载到一半了，可以设置其下载状态为暂停。</p>
+<p>如果没有缓存，但是数据库标记正在下载中，说明这个任务在上次使用没有正常进行，可以重新开启下载任务，或者标记下载出错。</p>
+<p>完成了对数据的清洗之后，可以重新保存到数据库中。</p>
+<h2 id="2-下载任务"><a href="#2-下载任务" class="headerlink" title="2. 下载任务"></a>2. 下载任务</h2><p>下载任务方法支持从外部传入一个taskModel, 然后下载器将taskModel存入数据库，同时开始下载任务。</p>
+<p>在开始下载任务之前，我们可以判断当前正在进行的任务数，如果任务数大于了系统的设定值，则先将下载任务加到等待队列中 (修改taskModel的下载状态，并保存到数据库)。</p>
+<p>开始下载任务可以分为两个情况。</p>
+<ol>
+<li>是否已经存在部分缓存文件，如果存在则继续下载；</li>
+<li>从未下载过，开始下载。</li>
+</ol>
+<p>在前文研究AFN的时候，我发现AFHTTPSessionManager只提供了常用的GET,POST等网络请求操作，而其父类AFURLSessionManager虽然不执行网络请求，但是可以获取一个经过封装的任务(dataTask, downloadTask, uploadTask)</p>
+<p>所以可以使用AFURLSessionManager获取一个下载任务，并实现下载进度，下载完成等block。</p>
+<p>下面是一个从无下载过的任务的创建</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs objc">session = [mgr downloadTaskWithRequest:request progress:^(<span class="hljs-built_in">NSProgress</span> * _Nonnull downloadProgress) &#123;<br>    <span class="hljs-comment">// 下载进度管理</span><br>    [<span class="hljs-keyword">self</span> handleProgressDownload:downloadProgress downloadTask:downloadTask];<br>&#125; destination:^<span class="hljs-built_in">NSURL</span> * _Nonnull(<span class="hljs-built_in">NSURL</span> * _Nonnull targetPath, <span class="hljs-built_in">NSURLResponse</span> * _Nonnull response) &#123;<br>    <span class="hljs-comment">// 这是存下视频文件</span><br>    <span class="hljs-keyword">return</span> [<span class="hljs-built_in">NSURL</span> fileURLWithPath: <span class="hljs-string">@"xxxxx"</span>];<br>&#125; completionHandler:^(<span class="hljs-built_in">NSURLResponse</span> * _Nonnull response, <span class="hljs-built_in">NSURL</span> * _Nullable filePath, <span class="hljs-built_in">NSError</span> * _Nullable error) &#123;<br>    <span class="hljs-comment">// 下载完成，做处理</span><br>    [<span class="hljs-keyword">self</span> handleDownloadCompletionResponse:response filePath:filePath error:error task:downloadTask];<br>&#125;];<br></code></pre></td></tr></table></figure>
+
+<p>下面是一个有部分缓存数据的下载任务的创建</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs objc">session = [mgr downloadTaskWithResumeData:resumnData progress:^(<span class="hljs-built_in">NSProgress</span> * _Nonnull downloadProgress) &#123;<br>    [<span class="hljs-keyword">self</span> handleProgressDownload:downloadProgress downloadTask:downloadTask];<br>&#125; destination:^<span class="hljs-built_in">NSURL</span> * _Nonnull(<span class="hljs-built_in">NSURL</span> * _Nonnull targetPath, <span class="hljs-built_in">NSURLResponse</span> * _Nonnull response) &#123;<br>    <span class="hljs-comment">//这是存下视频文件</span><br>    <span class="hljs-keyword">return</span> [<span class="hljs-built_in">NSURL</span> fileURLWithPath: [<span class="hljs-keyword">self</span> filePathForUid:downloadTask.uid]];<br>&#125; completionHandler:^(<span class="hljs-built_in">NSURLResponse</span> * _Nonnull response, <span class="hljs-built_in">NSURL</span> * _Nullable filePath, <span class="hljs-built_in">NSError</span> * _Nullable error) &#123;<br>    [<span class="hljs-keyword">self</span> handleDownloadCompletionResponse:response filePath:filePath error:error task:downloadTask];<br>&#125;];<br></code></pre></td></tr></table></figure>
+
+<p>区别在于一个传入的是网络请求，一个传入的是ResumeData。</p>
+<p>NSURLSession类可以通过多种方式生成下载任务</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs objc">- (<span class="hljs-built_in">NSURLSessionDownloadTask</span> *)downloadTaskWithRequest:(<span class="hljs-built_in">NSURLRequest</span> *)request;<br><br>- (<span class="hljs-built_in">NSURLSessionDownloadTask</span> *)downloadTaskWithURL:(<span class="hljs-built_in">NSURL</span> *)url;<br><br>- (<span class="hljs-built_in">NSURLSessionDownloadTask</span> *)downloadTaskWithResumeData:(<span class="hljs-built_in">NSData</span> *)resumeData;<br></code></pre></td></tr></table></figure>
+
+<p>在下载任务需要暂停时，可以存一个resumeData到缓存文件，想要恢复下载时可以打开该resumeData, 然后通过resumeData生成下载任务，即可恢复下载。</p>
+<h4 id="关于断点续传原理："><a href="#关于断点续传原理：" class="headerlink" title="关于断点续传原理："></a>关于断点续传原理：</h4><p>首先,如果想要进行断点续传，那么需要简单了解一下断点续传的工作机制，在HTTP请求头中，有一个Range的关键字，通过这个关键字可以告诉服务器返回哪些数据给我。<br>比如:<br>bytes=500-999 表示第500-第999字节<br>bytes=500- 表示从第500字节往后的所有字节<br>然后我们再根据服务器返回的数据，将得到的data数据拼接到文件后面,就可以实现断点续传了。</p>
+<p>生成好下载任务后，即可手动开启任务 [session resume]</p>
+<h2 id="3-暂停任务"><a href="#3-暂停任务" class="headerlink" title="3. 暂停任务"></a>3. 暂停任务</h2><p>通过获取DownloadTaskModel里面的session，也就是downlodTask, 然后对task调用cancelByProducingResumeData 可以进行暂停下载。</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs objc"><span class="hljs-keyword">if</span> (task.session &amp;&amp; task.downloadState == CBDownloadStateDownloading) &#123;<br>        [task.session cancelByProducingResumeData:^(<span class="hljs-built_in">NSData</span> * _Nullable resumeData) &#123;<br>            <span class="hljs-keyword">if</span>([resumeData writeToFile:[<span class="hljs-keyword">self</span> resumnDataPathForUid:task.uid] atomically:<span class="hljs-literal">YES</span>])&#123;<br>                DLog(<span class="hljs-string">@"写入Resume data成功"</span>);<br>                task.resumnDataUrl = [<span class="hljs-keyword">self</span> resumnDataNameForUid:task.uid];<br>                task.downloadState = CBDownloadStatePausing;<br>                task.session = <span class="hljs-literal">nil</span>;<br>                <br>                [<span class="hljs-keyword">self</span> saveTaskToDB:task];<br>                [CBNotificationHelper post:kCBDownloadDidPauseNotification withData:@&#123;kDownloadTaskKey: task&#125;];<br>            &#125;<span class="hljs-keyword">else</span>&#123;<br>                DLog(<span class="hljs-string">@"resume写入失败"</span>);<br>            &#125;<br>        &#125;];<br>    &#125;<br></code></pre></td></tr></table></figure>
+
+<p>在暂停下载时，需要我们手动将resumeData文件写到缓存目录，以便于恢复下载任务时使用。</p>
+<h2 id="4-继续下载"><a href="#4-继续下载" class="headerlink" title="4. 继续下载"></a>4. 继续下载</h2><p>这一步和一开始创建下载任务时类似，找到resumeData，然后恢复下载。</p>
+<h2 id="5-重新下载"><a href="#5-重新下载" class="headerlink" title="5. 重新下载"></a>5. 重新下载</h2><p>删掉缓存文件，重置model里面部分具有下载标识的字段，然后重新添加到下载队列即可。</p>
+<h2 id="6-取消下载"><a href="#6-取消下载" class="headerlink" title="6. 取消下载"></a>6. 取消下载</h2><p>取消下载不需要缓存数据，因此直接调用cancel即可</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs objc">[task.session cancel];<br></code></pre></td></tr></table></figure>
+
+<h1 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h1><p>在本次下载器的设计中，通过为下载器设计一个Model，可以实现与业务代码的解耦。</p>
+<p>通过NSURLSession获取一个下载任务，然后手动执行该任务即可。之所以能够断线续传，是因为在请求服务器URL时，可以在头部添加bytes字段表示当前从哪里继续下载，这可能需要服务器的支持。</p>
+<p>同时resumeData并不是系统自己生成的，而是我们在取消下载任务时自己去写入到文件夹中的。</p>
+
+  </article>
+  <footer class="f-cf">
+    
+      <a href="/2019/09/16/2019-09-16-Vue-wxapp/" class="link f-fl">⟵Vue初探 – 使用mpvue框架重构小程序 笔记</a>
+    
+    
+      <a href="/2018/09/26/%E7%99%BE%E5%BA%A6%E7%BD%91%E7%9B%98iOS%E5%AE%9E%E4%B9%A0%E7%94%9F/" class="link f-fr">百度网盘iOS实习生 - 三面总结⟶</a>
+    
+  </footer>
+</section></div>
+    <footer id="footer" class="f-cf">
+  xzkjob@gmail.com
+  
+    
+      
+        · <a href="https://github.com/ixzk" target="_blank" class="nav-icn">GitHub</a>
+      
+    
+  
+  <span class="copyright">All rights reserved @ZhengkeXu</span>
+</footer>
+<script type="text/javascript">document.write(unescape("%3Cspan id='cnzz_stat_icon_1260869892'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1260869892%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script>
+  </div>
+</body>
+</html>
