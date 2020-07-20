@@ -114,6 +114,28 @@ DownloadTaskModel: 下载任务类
     <div class="project-card project-card-continuous">
   
   <div class="ctnWrap">
+    <a href="/2019/07/11/2019-07-11-iOS-%E2%80%93-AFNetworking/" class="title">iOS – AFNetworking部分解析</a>
+    <section class="desc">
+  代码结构分析
+ * AFNetworking.h 中引入了框架所需的几个头文件
+ * NSURLSession: 封装了不同类型的网络请求
+ * Reachability: 封装网络状态管理器 (例如WIFI和WWAN)
+ * Security: 封装HTTPS证书类
+ * Serialization: 请求的序列化操作 (包装请求头、请求体，解析响应头、响应体)
+ * UIKit: 各种分类解决实际问题
+
+NSURLSession： 网络请求核心代码文件
+AFCompatibilityMacros.h 兼容性宏
+AFURLSessionManager
+我认为这是对iOS原生网络请求的封装，其
+</section>
+    <p class="sub">Jul 11, 2019</p>
+  </div>
+</div>
+  
+    <div class="project-card project-card-continuous">
+  
+  <div class="ctnWrap">
     <a href="/2018/09/26/%E7%99%BE%E5%BA%A6%E7%BD%91%E7%9B%98iOS%E5%AE%9E%E4%B9%A0%E7%94%9F/" class="title">百度网盘iOS实习生 - 三面总结</a>
     <section class="desc">
   公司: 北京百度网盘
